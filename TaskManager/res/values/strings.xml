@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Task Manager</string>
+    <string name="tasks">Tasks: </string>
+   <string name="add_button_label">Add button: </string>
+    
+    
+    <string name="menu_settings">Settings</string>
+
+</resources>
