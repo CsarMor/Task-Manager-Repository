@@ -1,14 +1,17 @@
 package com.polo50.android.taskmanager;
 
-import android.os.Bundle;
-import android.app.Activity;
+import java.util.List;
+
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class ViewTasksActivity extends Activity {
+import com.polo50.android.taskmanager.model.Task;
+
+public class ViewTasksActivity extends TaskManagerActivity {
 
 	private Button addButton;
 	private TextView taskTextList;
@@ -22,9 +25,22 @@ public class ViewTasksActivity extends Activity {
 		setUpViews();
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		showTaskList();
+	}
 	
-	
-	
+
+	private void showTaskList() {
+		StringBuffer resultText = new StringBuffer();
+		List<Task> taskLists = getTaskManagerApplication().getCurrentTaskList();
+		for (Task task : taskLists) {
+			resultText.append(String.format("* %s\n", task.getName()));
+		}
+		taskTextList.setText(resultText.toString());
+		
+	}
 	
 	private void setUpViews() {
 		addButton = (Button) findViewById(R.id.add_task_button);
