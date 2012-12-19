@@ -18,7 +18,7 @@
 	    android:layout_above="@+id/add_task_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="task list here"/>
+        android:text="task list here(tmp hard coded)"/>
         
 	<Button
 	    android:id="@id/add_task_button"
