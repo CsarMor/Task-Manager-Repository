@@ -15,17 +15,18 @@ public final class R {
     }
     public static final class id {
         public static final int add_new_task_button=0x7f070002;
-        public static final int add_task_button=0x7f070006;
+        public static final int add_task_button=0x7f070005;
         public static final int add_task_title=0x7f070000;
         public static final int cancel_add_task_button=0x7f070003;
         public static final int edit_task_name=0x7f070001;
         public static final int menu_settings=0x7f070007;
-        public static final int task_list_text=0x7f070005;
+        public static final int remove_completed_button=0x7f070006;
         public static final int task_list_title=0x7f070004;
     }
     public static final class layout {
         public static final int add_task_layout=0x7f030000;
         public static final int main=0x7f030001;
+        public static final int task_list_item=0x7f030002;
     }
     public static final class menu {
         public static final int main=0x7f060000;
@@ -35,8 +36,15 @@ public final class R {
         public static final int add_tasks_title=0x7f040002;
         public static final int app_name=0x7f040000;
         public static final int cancel_button_label=0x7f040004;
-        public static final int menu_settings=0x7f040005;
+        public static final int menu_settings=0x7f04000b;
+        public static final int no_tasks_title=0x7f04000a;
+        public static final int popup_button_cancel=0x7f040009;
+        public static final int popup_button_discard=0x7f040008;
+        public static final int popup_button_save=0x7f040007;
+        public static final int remove_completed_button_title=0x7f04000c;
         public static final int tasks_title=0x7f040001;
+        public static final int unsaved_changes_alert_message=0x7f040006;
+        public static final int unsaved_changes_alert_title=0x7f040005;
     }
     public static final class style {
         /** 

@@ -3,8 +3,13 @@ package com.polo50.android.taskmanager;
 import com.polo50.android.taskmanager.model.Task;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +20,8 @@ public class AddTaskActivity extends TaskManagerActivity {
 	private Button addNewTaskButton;
 	private Button cancelNewTaskButton;
 	private EditText taskNameEdit;
+	private boolean changesPending;
+	private AlertDialog unsavedChangesDialog;
 
 
 	@Override
@@ -27,7 +34,36 @@ public class AddTaskActivity extends TaskManagerActivity {
 	
 	
 	protected void cancelTask() {
-		finish();
+		if (changesPending){
+		unsavedChangesDialog = new AlertDialog.Builder(this)
+		.setTitle(R.string.unsaved_changes_alert_title)
+		.setMessage(R.string.unsaved_changes_alert_message)
+		.setPositiveButton(R.string.popup_button_save, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				addTask();
+			}
+		})
+		.setNeutralButton(R.string.popup_button_discard, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				finish();
+			}
+		})
+		.setNegativeButton(R.string.popup_button_cancel, new OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				unsavedChangesDialog.cancel();
+			}
+		})
+		.create();
+		unsavedChangesDialog.show();
+		} else {
+			finish();
+		}
 	}
 
 
@@ -61,6 +97,21 @@ public class AddTaskActivity extends TaskManagerActivity {
 				cancelTask();
 			}
 		});
+		taskNameEdit.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				changesPending = true;
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
+			
+			@Override
+			public void afterTextChanged(Editable s) {}
+		});
+		
 	}
 
 	

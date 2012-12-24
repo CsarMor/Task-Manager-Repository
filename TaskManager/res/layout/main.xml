@@ -12,20 +12,36 @@
         android:layout_height="wrap_content"
         android:text="@string/tasks_title" />
     
-	<TextView
-	    android:id="@+id/task_list_text"
+    <ListView 
+        android:id="@id/android:list"
 	    android:layout_below="@id/task_list_title"
 	    android:layout_above="@+id/add_task_button"
+	    android:gravity="center_vertical|center_horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="task list here(tmp hard coded)"/>
+        />
+    
+	<TextView
+	    android:id="@id/android:empty"
+	    android:layout_below="@id/task_list_title"
+	    android:layout_above="@+id/add_task_button"
+	    android:gravity="center_vertical|center_horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_tasks_title"/>
         
 	<Button
 	    android:id="@id/add_task_button"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/add_button_label"
 	    android:layout_alignParentBottom="true" />
-    
+    <Button 
+        android:id="@+id/remove_completed_button"
+        android:text="@string/remove_completed_button_title"
+        android:layout_toRightOf="@id/add_task_button"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
 
 </RelativeLayout>

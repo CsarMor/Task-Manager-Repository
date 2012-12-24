@@ -7,7 +7,23 @@
    	<string name="add_button_label">Add New Task</string>
     <string name="cancel_button_label">Cancel</string>
     
+    <string name="unsaved_changes_alert_title">Unsaved changes detected.</string>
+    <string name="unsaved_changes_alert_message">You have made some changes on
+        the screen. Whould you like to save them before moving back to Task List?</string>
+    <string name="popup_button_save">Save</string>
+    <string name="popup_button_discard">Discard</string>
+    <string name="popup_button_cancel">Cancel</string>
+    <string name="no_tasks_title">No Tasks.</string>
+    
+    
     
     <string name="menu_settings">Settings</string>
+    
+    
+    
+    <string name="remove_completed_button_title">Remove Completed</string>
+    
+    
+    
 
 </resources>

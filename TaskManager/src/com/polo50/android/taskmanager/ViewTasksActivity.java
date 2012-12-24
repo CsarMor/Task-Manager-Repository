@@ -2,19 +2,26 @@ package com.polo50.android.taskmanager;
 
 import java.util.List;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.polo50.android.taskmanager.adapter.TaskListAdapter;
 import com.polo50.android.taskmanager.model.Task;
 
-public class ViewTasksActivity extends TaskManagerActivity {
+public class ViewTasksActivity extends ListActivity {
 
 	private Button addButton;
-	private TextView taskTextList;
+	private Button removeCompletedButton;
+	private TaskManagerApplication application;
+	private TaskListAdapter adapter;
 	
 
 
@@ -23,41 +30,60 @@ public class ViewTasksActivity extends TaskManagerActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		setUpViews();
+		
+		application = (TaskManagerApplication) getApplication();
+		adapter = new TaskListAdapter(application.getCurrentTaskList(), this);
+		setListAdapter(adapter);
+		//for quick simple text output in List.
+		//setListAdapter(new ArrayAdapter<Task>(this, android.R.layout.simple_list_item_1, application.getCurrentTaskList()));
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		showTaskList();
+		adapter.notifyDataSetChanged();
+		//showTaskList();
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		adapter.toggleTaskCompleteAtPosition(position);
+		
 	}
 	
 
 	private void showTaskList() {
-		StringBuffer resultText = new StringBuffer();
 		List<Task> taskLists = getTaskManagerApplication().getCurrentTaskList();
-		for (Task task : taskLists) {
-			resultText.append(String.format("* %s\n", task.getName()));
-		}
-		taskTextList.setText(resultText.toString());
 		
+	}
+	
+	protected TaskManagerApplication getTaskManagerApplication() {
+		return (TaskManagerApplication) getApplication();
 	}
 	
 	private void setUpViews() {
 		addButton = (Button) findViewById(R.id.add_task_button);
-		taskTextList = (TextView) findViewById(R.id.task_list_text);
-		addButton.setOnClickListener(new View.OnClickListener() {
+ 		addButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(ViewTasksActivity.this, AddTaskActivity.class);
 				startActivity(intent);
 			}
 		});
+		removeCompletedButton = (Button) findViewById(R.id.remove_completed_button);
+		removeCompletedButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				application.removeCompletedTasks();
+				adapter.removeCompletedTasks();
+				adapter.notifyDataSetChanged();
+			}
+		});
 		
 	}
 	
-
-
-
 
 
 	@Override

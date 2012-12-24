@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
 		<activity
-            android:name=".AddTaskActivity"
+            android:name="com.polo50.android.taskmanager.AddTaskActivity"
             android:label="@string/app_name" >
         </activity>
     </application>
