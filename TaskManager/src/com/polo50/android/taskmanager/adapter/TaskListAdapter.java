@@ -62,17 +62,24 @@ public class TaskListAdapter extends BaseAdapter {
 		notifyDataSetChanged();
 	}
 
-	public void removeCompletedTasks() {
+	public List<Long> removeCompletedTasks() {
+		
 		if (taskList == null || taskList.isEmpty()) {
-			return;
+			return new ArrayList<Long>();
 		}
 		
+		List<Long> resultIdList = new ArrayList<Long>();
 		for (Iterator<Task> iterator = taskList.iterator(); iterator.hasNext();) {
 			Task task = iterator.next();
 			if (task.isComplete()) {
+				resultIdList.add(task.getId());
 				iterator.remove();
 			}
 		}
+		
+		this.notifyDataSetChanged();
+		
+		return resultIdList;
 	}
 
 }

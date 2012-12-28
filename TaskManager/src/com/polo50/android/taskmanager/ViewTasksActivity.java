@@ -49,7 +49,8 @@ public class ViewTasksActivity extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		adapter.toggleTaskCompleteAtPosition(position);
-		
+		Task taskToUpdate = (Task) adapter.getItem(position);
+		application.updateTask(taskToUpdate);
 	}
 	
 
@@ -76,9 +77,9 @@ public class ViewTasksActivity extends ListActivity {
 			
 			@Override
 			public void onClick(View v) {
-				application.removeCompletedTasks();
-				adapter.removeCompletedTasks();
-				adapter.notifyDataSetChanged();
+				//application.removeCompletedTasks();
+				List<Long> taskIdListForDelete = adapter.removeCompletedTasks();
+				application.deleteTaskListFromDB(taskIdListForDelete );
 			}
 		});
 		

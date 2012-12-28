@@ -4,11 +4,22 @@ public class Task {
 	
 	private String name;
 	private boolean isComplete;
+	private long id; //WARNING they say, int in SQL could be bigger than int in Java, 
+					//so long is recomended.
 
 	
 	public Task(String name) {
 		this.name = name;
 	}
+	
+	
+	public Task(long id, String name, boolean isComplete) {
+		this.name = name;
+		this.isComplete = isComplete;
+		this.id = id;
+	}
+
+
 
 
 	public String getName() {
@@ -65,6 +76,15 @@ public class Task {
 
 	public void toggleComplete() {
 		isComplete = !isComplete;		
+	}
+
+
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public long getId() {
+		return id;
 	}
 	
 	

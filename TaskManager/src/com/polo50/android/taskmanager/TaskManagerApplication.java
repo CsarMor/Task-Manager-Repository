@@ -8,22 +8,61 @@ import java.util.Map;
 import com.polo50.android.taskmanager.model.Task;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteAbortException;
+import android.database.sqlite.SQLiteDatabase;
+import static com.polo50.android.taskmanager.TaskManagerSQLiteHelper.*;
 
 public class TaskManagerApplication extends Application {
 	
-	private List<Task> currentTaskList = new ArrayList<Task>();;
-
+	private List<Task> currentTaskList = new ArrayList<Task>(); //TODO XXX looks this one redundant vs Adapter one
+	private SQLiteDatabase database;;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		loadSavedPreferences();
+		//loadSavedTasksFromPreferences();
+		loadSavedTasksFromDB();
 	}
 
 
-	private void loadSavedPreferences() {
+	private void loadSavedTasksFromDB() {
+
+		TaskManagerSQLiteHelper sqlHelper = new TaskManagerSQLiteHelper(this);
+		database = sqlHelper.getWritableDatabase();
+		Cursor taskCursor = database.query(
+				TASK_TABLE, 
+				new String[] {TASK_ID, TASK_NAME, TASK_COMPLETE}, 
+				null, 
+				null, 
+				null, 
+				null, 
+				String.format("%s,%s", TASK_COMPLETE, TASK_NAME));
+		taskCursor.moveToFirst();
+		
+		if (! taskCursor.isAfterLast()) {
+			do {
+				int id = taskCursor.getInt(0);
+				String name = taskCursor.getString(1);
+				String boolValue = taskCursor.getString(2);
+				boolean isComplete = Boolean.parseBoolean(boolValue);
+				currentTaskList.add(new Task(id, name, isComplete));
+			} while (taskCursor.moveToNext());
+		}
+		
+		taskCursor.close();
+		
+	}
+
+
+	/*
+	 * Persistence logic into the preferences.
+	 */
+	private void loadSavedTasksFromPreferences() {
 		SharedPreferences prefs = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
 		Map<String, ?> savedTasks = prefs.getAll();
 		if (savedTasks == null || savedTasks.size() < 1) {
@@ -44,21 +83,27 @@ public class TaskManagerApplication extends Application {
 		}
 		
 		getCurrentTaskList().add(task);
-		saveTaskToPreferences(task);
+		saveTaskToDb(task);
+		//saveTaskToPreferences(task);
 		
 	}
 	
+	private void saveTaskToDb(Task task) {
+		if (task == null) {
+			return;
+		}
+		ContentValues values = new ContentValues();
+		values.put(TASK_NAME, task.getName());
+		values.put(TASK_COMPLETE, task.isComplete());		
+		long newId = database.insert(TASK_TABLE, null, values);
+		task.setId(newId);		
+	}
+
+
 	private void saveTaskToPreferences(Task task) {
 		SharedPreferences prefs = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
 		Editor editor = prefs.edit();
 		editor.putString(task.getName(), task.getName());
-		editor.commit();
-	}
-	
-	private void removeTaskFromPreferences(Task task) {
-		SharedPreferences prefs = getSharedPreferences("shared_prefs", Context.MODE_PRIVATE);
-		Editor editor = prefs.edit();
-		editor.remove(task.getName());
 		editor.commit();
 	}
 	
@@ -90,16 +135,51 @@ public class TaskManagerApplication extends Application {
 
 
 	public void removeCompletedTasks() {
-		List<Task> taskListToRemove = new ArrayList<Task>(); 
+		List<Long> taskIdToRemoveList = new ArrayList<Long>();
+		//List<Task> taskListToRemove = new ArrayList<Task>(); 
 		List<Task> taskList = getCurrentTaskList();
 		for (Iterator<Task> iterator = taskList.iterator(); iterator.hasNext();) {
 			Task task =  iterator.next();
 			if (task.isComplete()) {
 				iterator.remove();
-				taskListToRemove.add(task);
+				taskIdToRemoveList.add(task.getId());
+				//taskListToRemove.add(task);
 			}
 		}
-		removeTaskListFromPreferences(taskListToRemove);
+		//removeTaskListFromPreferences(taskListToRemove);
+		//deleteTaskListFromDB(taskIdToRemoveList);
+	}
+
+
+	public void deleteTaskListFromDB(List<Long> taskIdListToRemove) {
+		if (taskIdListToRemove == null || taskIdListToRemove.size() < 1) {
+			return;
+		}
+		StringBuffer idList = new StringBuffer();
+		
+		for (int i = 0; i < taskIdListToRemove.size(); i++) {
+			idList.append(taskIdListToRemove.get(i));
+			if (i != taskIdListToRemove.size() - 1) {
+				idList.append(",");
+			}
+		}
+		String whereClause = String.format("%s in (%s)", TASK_ID, idList.toString());
+		database.delete(TASK_TABLE, whereClause, null);
+	}
+
+
+	public void updateTask(Task taskToUpdate) {
+		if (taskToUpdate == null) {
+			return;
+		}
+		
+		ContentValues values = new ContentValues();
+		values.put(TASK_NAME, taskToUpdate.getName());
+		values.put(TASK_COMPLETE, Boolean.toString(taskToUpdate.isComplete()));
+		
+		long id =taskToUpdate.getId();
+		String whereClause = String.format("%s = ?", TASK_ID);
+		database.update(TASK_TABLE, values, whereClause, new String[] {Long.toString(id)});
 	}
 	
 }
