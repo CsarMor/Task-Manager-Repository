@@ -25,5 +25,21 @@
     
     
     
+    <string name="add_location_to_task_button_title">Add Location to Task</string>
+    
+    
+    
+    <string name="add_location_to_task_title">Add Location to Task</string>
+    
+    
+    
+    <string name="map_this_address_button_title">Map This Address</string>
+    
+    
+    
+    <string name="use_this_location_title">Use This Location</string>
+    
+    
+    
 
 </resources>

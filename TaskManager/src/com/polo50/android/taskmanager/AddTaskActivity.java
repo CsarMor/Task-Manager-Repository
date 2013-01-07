@@ -7,7 +7,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -17,11 +19,18 @@ import android.widget.TextView;
 
 public class AddTaskActivity extends TaskManagerActivity {
 
+	private static final int REQUEST_CHOOSE_ADDRESS = 0;
+	
 	private Button addNewTaskButton;
 	private Button cancelNewTaskButton;
 	private EditText taskNameEdit;
 	private boolean changesPending;
 	private AlertDialog unsavedChangesDialog;
+	private Address address;
+
+	private Button addLocationButton;
+
+	private TextView addressText;
 
 
 	@Override
@@ -31,6 +40,32 @@ public class AddTaskActivity extends TaskManagerActivity {
 		setUpViews();
 	}
 
+	public void addLocationButtonClicked(View view) {
+		Intent intentToLocation = new Intent(this, AddLocationMapActivity.class);
+		startActivityForResult(intentToLocation, REQUEST_CHOOSE_ADDRESS);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (address == null) {
+			addLocationButton.setVisibility(View.VISIBLE);
+			addressText.setVisibility(View.GONE);
+		} else {
+			addLocationButton.setVisibility(View.GONE);
+			addressText.setVisibility(View.VISIBLE);
+			addressText.setText(address.getAddressLine(0));
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (REQUEST_CHOOSE_ADDRESS == requestCode && RESULT_OK == resultCode) {
+			address = data.getParcelableExtra(AddLocationMapActivity.ADDRESS_RESULT);
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}
 	
 	
 	protected void cancelTask() {
@@ -83,7 +118,9 @@ public class AddTaskActivity extends TaskManagerActivity {
 		addNewTaskButton = (Button) findViewById(R.id.add_new_task_button);
 		cancelNewTaskButton = (Button) findViewById(R.id.cancel_add_task_button);
 		taskNameEdit = (EditText) findViewById(R.id.edit_task_name);
-
+		addLocationButton = (Button) findViewById(R.id.add_location_button);
+		addressText = (TextView) findViewById(R.id.address_text);
+		
 		addNewTaskButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
