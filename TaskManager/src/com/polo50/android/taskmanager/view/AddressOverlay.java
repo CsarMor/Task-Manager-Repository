@@ -17,6 +17,8 @@ public class AddressOverlay extends Overlay {
 	private Address address;
 	private GeoPoint geoPoint;
 
+	//tmp comment to check if it possible to commit
+	
 	public AddressOverlay(Address address) {
 		super();
 		setAddress(address);
