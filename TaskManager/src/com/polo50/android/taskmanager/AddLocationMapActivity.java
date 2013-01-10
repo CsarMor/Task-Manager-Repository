@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.polo50.android.taskmanager.view.AddressOverlay;
 
@@ -26,6 +27,7 @@ public class AddLocationMapActivity extends MapActivity {
 	private Button useLocationButton;
 	private MapView mapView;
 	private Address address;
+	private MyLocationOverlay myLocationOverlay;
 	
 	@Override
 	protected void onCreate(Bundle icicle) {
@@ -40,6 +42,12 @@ public class AddLocationMapActivity extends MapActivity {
 		useLocationButton.setEnabled(false);
 		mapView = (MapView) findViewById(R.id.map);
 		mapView.setBuiltInZoomControls(true);
+		
+		myLocationOverlay = new MyLocationOverlay(this, mapView);
+		myLocationOverlay.enableMyLocation();
+		mapView.getOverlays().add(myLocationOverlay);
+		mapView.invalidate();
+		
 		mapLocationButton = (Button) findViewById(R.id.map_location_button); 
 		mapLocationButton.setOnClickListener(new View.OnClickListener() {
 			
@@ -63,9 +71,21 @@ public class AddLocationMapActivity extends MapActivity {
 				finish();
 			}
 		});
-		
-		
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		myLocationOverlay.enableMyLocation();
+		//myLocationOverlay.enableCompass();
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		myLocationOverlay.disableMyLocation();
+	}
+	
 
 	private void mapCurrentAddress() {
 		String addressString = addressText.getText().toString();
@@ -83,6 +103,7 @@ public class AddLocationMapActivity extends MapActivity {
 				List<Overlay> mapOverlayList = mapView.getOverlays();
 				AddressOverlay addressOverlay = new AddressOverlay(address);
 				mapOverlayList.add(addressOverlay);
+				mapOverlayList.add(myLocationOverlay);
 				mapView.invalidate();
 				final MapController mapController = mapView.getController();
 				mapController.animateTo(addressOverlay.getGeoPoint(), new Runnable() {
