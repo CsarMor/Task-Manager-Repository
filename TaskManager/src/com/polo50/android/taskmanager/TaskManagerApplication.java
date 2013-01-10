@@ -36,7 +36,7 @@ public class TaskManagerApplication extends Application {
 		database = sqlHelper.getWritableDatabase();
 		Cursor taskCursor = database.query(
 				TASK_TABLE, 
-				new String[] {TASK_ID, TASK_NAME, TASK_COMPLETE}, 
+				new String[] {TASK_ID, TASK_NAME, TASK_COMPLETE, TASK_ADDRESS, TASK_LATITUDE, TASK_LONGITUDE}, 
 				null, 
 				null, 
 				null, 
@@ -50,7 +50,13 @@ public class TaskManagerApplication extends Application {
 				String name = taskCursor.getString(1);
 				String boolValue = taskCursor.getString(2);
 				boolean isComplete = Boolean.parseBoolean(boolValue);
-				currentTaskList.add(new Task(id, name, isComplete));
+				String address = taskCursor.getString(3);
+				float latitude = taskCursor.getFloat(4);
+				float longitude = taskCursor.getFloat(5);
+				
+				
+				
+				currentTaskList.add(new Task(id, name, isComplete, address, latitude, longitude));
 			} while (taskCursor.moveToNext());
 		}
 		
@@ -79,7 +85,7 @@ public class TaskManagerApplication extends Application {
 
 	public void addTask(Task task) {
 		if (task == null) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Task could not be a null object.");
 		}
 		
 		getCurrentTaskList().add(task);
@@ -94,7 +100,10 @@ public class TaskManagerApplication extends Application {
 		}
 		ContentValues values = new ContentValues();
 		values.put(TASK_NAME, task.getName());
-		values.put(TASK_COMPLETE, task.isComplete());		
+		values.put(TASK_COMPLETE, task.isComplete());	
+		values.put(TASK_ADDRESS, task.getAddress());
+		values.put(TASK_LATITUDE, task.getLatitude());
+		values.put(TASK_LONGITUDE, task.getLongitude());
 		long newId = database.insert(TASK_TABLE, null, values);
 		task.setId(newId);		
 	}
@@ -176,6 +185,9 @@ public class TaskManagerApplication extends Application {
 		ContentValues values = new ContentValues();
 		values.put(TASK_NAME, taskToUpdate.getName());
 		values.put(TASK_COMPLETE, Boolean.toString(taskToUpdate.isComplete()));
+		values.put(TASK_ADDRESS, taskToUpdate.getAddress());
+		values.put(TASK_LATITUDE, taskToUpdate.getLatitude());
+		values.put(TASK_LONGITUDE, taskToUpdate.getLongitude());
 		
 		long id =taskToUpdate.getId();
 		String whereClause = String.format("%s = ?", TASK_ID);

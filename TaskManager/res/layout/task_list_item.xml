@@ -11,5 +11,12 @@
         android:layout_height="wrap_content"
         android:checkMark="?android:attr/listChoiceIndicatorMultiple"
         android:gravity="center_vertical" />
+    
+    <TextView 
+        android:id="@+id/address_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
 
 </com.polo50.android.taskmanager.view.TaskListItem>

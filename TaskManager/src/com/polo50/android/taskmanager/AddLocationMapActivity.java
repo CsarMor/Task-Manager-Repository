@@ -97,6 +97,7 @@ public class AddLocationMapActivity extends MapActivity {
 		} catch (IOException e) {
 			// TODO XXX show alert: "Problems with network".
 			// TODO XXX - menu - add Belarus Mova for each label, as prove approach
+			// TODO XXX - add google address line, not custom string
 			e.printStackTrace();
 		}
 		

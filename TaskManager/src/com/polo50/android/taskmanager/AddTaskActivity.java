@@ -104,11 +104,13 @@ public class AddTaskActivity extends TaskManagerActivity {
 
 	protected void addTask() {
 		String newTaskName = taskNameEdit.getText().toString();
-		if (newTaskName == null) {
+		if (newTaskName == null || newTaskName.length() < 1) {
+			//TODO XXX show pop-up information - that name should not be null;
 			throw new IllegalArgumentException("Task name must not be empty!");
 		}
 		
 		Task newTask = new Task(newTaskName);
+		newTask.setAddress(address);
 		getTaskManagerApplication().addTask(newTask);
 		finish();
 	}
