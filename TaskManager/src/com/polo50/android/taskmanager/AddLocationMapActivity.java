@@ -110,7 +110,7 @@ public class AddLocationMapActivity extends MapActivity {
 					
 					@Override
 					public void run() {
-						mapController.setZoom(12);
+						mapController.setZoom(18);
 					}
 				});
 				useLocationButton.setEnabled(true);				

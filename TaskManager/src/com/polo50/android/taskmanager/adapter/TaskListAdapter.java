@@ -9,6 +9,7 @@ import com.polo50.android.taskmanager.model.Task;
 import com.polo50.android.taskmanager.view.TaskListItem;
 
 import android.content.Context;
+import android.location.Location;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -17,10 +18,13 @@ public class TaskListAdapter extends BaseAdapter {
 
 	private List<Task> taskList;
 	private Context context;
+	private List<Task> filteredTasks;
+	private List<Task> unfilteredTasks;
 	
 	public TaskListAdapter(List<Task> taskList, Context context) {
 		super();
 		this.taskList = taskList;
+		this.unfilteredTasks = taskList;
 		this.context = context;
 	}
 
@@ -80,6 +84,34 @@ public class TaskListAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 		
 		return resultIdList;
+	}
+
+	public void filterTasksByLocation(Location latestLocation,
+			long locationFilterDistance) {
+		filteredTasks = new ArrayList<Task>();
+		for (Task task: taskList) {
+			if (task.hasLocation() && taskIsWithGeofence(task, latestLocation, locationFilterDistance)) {
+				filteredTasks.add(task);
+			}
+		}
+		taskList = filteredTasks;
+		notifyDataSetChanged();
+	}
+
+	private boolean taskIsWithGeofence(Task task, Location latestLocation,
+			final long locationFilterDistance) {
+		
+		float[] distanceArray = new float[1];
+		Location.distanceBetween(task.getLatitude(), task.getLongitude(), 
+				latestLocation.getLatitude(), latestLocation.getLongitude(), 
+				distanceArray);
+		
+		return (distanceArray[0] < locationFilterDistance);
+	}
+
+	public void removeLocationFilter() {
+		taskList = unfilteredTasks;
+		notifyDataSetChanged();		
 	}
 
 }
